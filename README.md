@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤟 SignSpeak AI
+# SignSpeak AI
 ### "Turn Sign Language Into Voice"
 **Real-Time American Sign Language (ASL) Recognition Using Deep Learning & Computer Vision**
 
@@ -21,21 +21,21 @@
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
-- 📹 **Real-Time Webcam Recognition:** High-speed hand landmark detection via Google MediaPipe Hands (21 3D points) paired with a custom trained Convolutional Neural Network (CNN).
-- 🧠 **Multi-Class ASL Support:** Recognizes 29 classes including the complete American Sign Language alphabet (`A`–`Z`), `space`, `del` (delete), and `nothing`.
-- 🛡️ **Temporal Stability & Smoothing:** Built-in frame buffer voting algorithm prevents flickering and accidental character duplication when signing.
-- 🔤 **Visual Sign Board Mode:** Instant interactive fallback for low-light situations or when webcams are offline — click visual sign cards with anatomical diagrams.
-- 💬 **Live Sentence Builder:** Accumulate recognized letters into words and full sentences with space insertion, character backspacing, and clear controls.
-- 🔊 **Instant Text-to-Speech (TTS):** Transforms composed messages into natural voice speech using browser Web Speech synthesis.
-- 🤖 **Signi AI Mascot & Fun Mode:** Lovable, responsive vector companion with 25 animated emotional states, procedural Web Audio dance music synthesizer, confetti celebrations, and voice-command interactivity.
-- 📊 **Analytics Dashboard:** Session tracking, prediction history, confidence metrics, and most-practiced signs logged to SQLite.
-- 🚀 **One-Click Launcher:** Includes `run.bat` for instant startup on Windows systems.
+-  **Real-Time Webcam Recognition:** High-speed hand landmark detection via Google MediaPipe Hands (21 3D points) paired with a custom trained Convolutional Neural Network (CNN).
+-  **Multi-Class ASL Support:** Recognizes 29 classes including the complete American Sign Language alphabet (`A`–`Z`), `space`, `del` (delete), and `nothing`.
+-  **Temporal Stability & Smoothing:** Built-in frame buffer voting algorithm prevents flickering and accidental character duplication when signing.
+-  **Visual Sign Board Mode:** Instant interactive fallback for low-light situations or when webcams are offline — click visual sign cards with anatomical diagrams.
+-  **Live Sentence Builder:** Accumulate recognized letters into words and full sentences with space insertion, character backspacing, and clear controls.
+-  **Instant Text-to-Speech (TTS):** Transforms composed messages into natural voice speech using browser Web Speech synthesis.
+-  **Signi AI Mascot & Fun Mode:** Lovable, responsive vector companion with 25 animated emotional states, procedural Web Audio dance music synthesizer, confetti celebrations, and voice-command interactivity.
+- **Analytics Dashboard:** Session tracking, prediction history, confidence metrics, and most-practiced signs logged to SQLite.
+- **One-Click Launcher:** Includes `run.bat` for instant startup on Windows systems.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
@@ -123,7 +123,7 @@ Input (64, 64, 3)
 
 ---
 
-## 🤖 Signi AI Companion & Fun Mode
+## Signi AI Companion & Fun Mode
 
 Signi is an interactive, animated vector companion designed to guide users, teach sign vocabulary, and provide joyful feedback:
 
@@ -135,7 +135,7 @@ Signi is an interactive, animated vector companion designed to guide users, teac
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 SignSpeak-AI/
@@ -209,7 +209,7 @@ SignSpeak-AI/
 
 ---
 
-## ⚡ Installation & Quickstart
+## Installation & Quickstart
 
 ### Prerequisites
 - Python 3.10, 3.11, or 3.12 installed
@@ -248,11 +248,11 @@ python app.py
 
 ### 5. Access the Web Dashboard
 Navigate to your browser:
-👉 **`http://127.0.0.1:5000`**
+ **`http://127.0.0.1:5000`**
 
 ---
 
-## 📡 REST API Reference
+##  REST API Reference
 
 ### Health Check
 ```http
@@ -299,7 +299,7 @@ Content-Type: application/json
 
 ---
 
-## 🎓 Viva & Technical Interview Q&A
+##  Viva & Technical Interview Q&A
 
 <details>
 <summary><b>1. Why use MediaPipe alongside a CNN instead of feeding full frames to the CNN?</b></summary>
@@ -327,12 +327,12 @@ Precision, Recall, and F1-score across all 29 classes. Classification reports an
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
-  <b>SignSpeak AI</b> • Built with ❤️ for Accessibility & Inclusion
+  <b>SignSpeak AI</b> • Built for Accessibility & Inclusion
 </div>
