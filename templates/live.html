@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Live Recognition — SignSpeak AI{% endblock %}
+
+{% block content %}
+<div class="webcam-layout">
+    <!-- Left Column: Video Feed & Controls -->
+    <div>
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <div class="brand-icon-wrapper" style="width: 32px; height: 32px; font-size: 0.9rem;">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h2 style="font-size: 1.35rem;">Real-Time Gesture Scanner</h2>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span id="live-fps-display" class="mono-text" style="font-size: 0.8rem; color: var(--accent-cyan);">0 FPS</span>
+                    <span id="live-latency-display" class="mono-text" style="font-size: 0.8rem; color: var(--text-muted);">0 ms</span>
+                </div>
+            </div>
+
+            <!-- Video Container -->
+            <div class="camera-feed-container">
+                <video id="webcam-video" autoplay playsinline muted></video>
+                <canvas id="webcam-canvas"></canvas>
+
+                <!-- HUD Laser Scanner Line -->
+                <div id="laser-scanner" class="laser-scan-line"></div>
+
+                <!-- Target Box Overlay -->
+                <div class="target-frame">
+                    <span style="position: absolute; top: 10px; left: 12px; font-size: 0.7rem; color: var(--accent-cyan); font-family: var(--font-mono); letter-spacing: 0.1em;">
+                        ROI DETECT
+                    </span>
+                </div>
+
+                <!-- Initial Placeholder when camera is stopped -->
+                <div id="camera-placeholder" style="position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; color: var(--text-muted); text-align: center; padding: 2rem;">
+                    <i class="fas fa-video-slash" style="font-size: 3.5rem; color: var(--text-muted);"></i>
+                    <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-secondary);">Camera is Currently Offline</p>
+                    <p style="font-size: 0.85rem; max-width: 320px;">
+                        Click <strong>Start Camera</strong> below to grant webcam access and begin recognizing ASL hand signs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Camera Controls Bar -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button id="start-cam-btn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Camera
+                    </button>
+                    <button id="stop-cam-btn" class="btn btn-danger" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+
+                <!-- Live Threshold Slider -->
+                <div style="display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.03); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <label for="confidence-threshold-slider" style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">
+                        Min Confidence: <span id="threshold-val-text" class="mono-text" style="color: var(--accent-cyan);">70%</span>
+                    </label>
+                    <input type="range" id="confidence-threshold-slider" min="50" max="95" value="70" step="1" 
+                           oninput="document.getElementById('threshold-val-text').textContent = this.value + '%'" 
+                           style="width: 100px; accent-color: var(--accent-indigo);">
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Builder Studio -->
+        <div class="glass-card text-builder-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-comment-dots" style="color: var(--accent-purple);"></i>
+                    <h3 style="font-size: 1.15rem;">Text Builder Studio</h3>
+                </div>
+                <span style="font-size: 0.775rem; color: var(--text-muted);">Auto-accumulates stable signs</span>
+            </div>
+
+            <!-- Accumulated Signs Box -->
+            <div id="text-accumulator" class="letter-accumulator" style="margin-bottom: 0.75rem;">
+                <span style="color: var(--text-muted); font-size: 1rem; font-weight: normal;">Gestures will appear here...</span>
+            </div>
+
+            <!-- Formed Sentence Display -->
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+                <div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase;">Sentence Output</span>
+                    <strong id="full-sentence-output" style="font-size: 1.15rem; color: var(--text-primary);">Ready to translate</strong>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button id="btn-builder-speak" class="btn btn-primary btn-sm" title="Speak Text via SpeechSynthesis">
+                        <i class="fas fa-volume-up"></i> Speak
+                    </button>
+                    <button id="btn-builder-copy" class="btn btn-secondary btn-sm" title="Copy to Clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Text Builder -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <button id="btn-builder-space" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrows-alt-h"></i> Space
+                </button>
+                <button id="btn-builder-undo" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-undo"></i> Undo
+                </button>
+                <button id="btn-builder-clear" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Live Prediction HUD & Alternatives -->
+    <div>
+        <!-- Primary Output Card -->
+        <div class="glass-card" style="padding: 2rem; text-align: center; margin-bottom: 1.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem;">
+                Predicted ASL Sign
+            </span>
+
+            <div id="live-sign-display" class="prediction-badge-hero">
+                —
+            </div>
+
+            <div style="margin: 1.25rem 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+                    <span style="color: var(--text-secondary);">Model Confidence</span>
+                    <strong id="live-conf-display" class="mono-text" style="color: var(--text-primary);">0.0%</strong>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="live-conf-bar" class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-top: 1rem;">
+                <div id="live-status-badge" class="badge-status">
+                    <span class="status-dot"></span> Camera Idle
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Candidates -->
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.05rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-list-ol" style="color: var(--accent-cyan);"></i> Top Predictions
+            </h3>
+            <div id="live-top3-container">
+                <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 1.5rem 0;">
+                    Start camera to view confidence rankings
+                </div>
+            </div>
+        </div>
+
+        <!-- Gesture Recognition Tips -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h4 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 0.65rem;">
+                <i class="fas fa-lightbulb" style="color: var(--accent-amber);"></i> Optimal Recognition Tips
+            </h4>
+            <ul style="list-style: none; font-size: 0.825rem; color: var(--text-secondary); line-height: 1.8;">
+                <li><i class="fas fa-check" style="color: var(--accent-emerald); margin-right: 0.4rem;"></i> Position your hand inside the target frame.</li>
+                <li><i class="fas fa-check" style="color: var(--accent-emerald); margin-right: 0.4rem;"></i> Ensure clear, uniform ambient lighting.</li>
+                <li><i class="fas fa-check" style="color: var(--accent-emerald); margin-right: 0.4rem;"></i> Avoid busy backgrounds directly behind your hand.</li>
+                <li><i class="fas fa-check" style="color: var(--accent-emerald); margin-right: 0.4rem;"></i> Hold gesture steadily for 1 second to register.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/text_builder.js') }}"></script>
+<script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+{% endblock %}

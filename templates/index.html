@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}SignSpeak AI — Turn Your Signs Into Words{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-wrapper">
+    <div class="hero-pill-badge">
+        <i class="fas fa-sparkles"></i> AI Accessibility Communication Tool
+    </div>
+
+    <h1 class="hero-heading">
+        Turn Your Signs Into <span class="gradient-text">Words & Voice</span>
+    </h1>
+
+    <p class="hero-subheading">
+        Communicate naturally and effortlessly. Use your webcam or visual sign cards to convert American Sign Language gestures into instant written text and spoken speech.
+    </p>
+
+    <div class="hero-buttons">
+        <a href="/sign" class="btn btn-primary btn-lg">
+            <i class="fas fa-hand-sparkles"></i> Start Signing
+        </a>
+        <a href="/alphabet" class="btn btn-secondary btn-lg">
+            <i class="fas fa-book-open"></i> Explore Sign Alphabet
+        </a>
+    </div>
+
+    <!-- Signi Hero Welcome Companion Card -->
+    <div class="signi-companion-banner" style="max-width: 620px; margin: 0 auto 2.5rem; text-align: left; animation: heroPillIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;">
+        <div class="signi-avatar-box" data-size="52" data-state="happy" onclick="window.signi.openChat()" title="Tap to talk with Signi"></div>
+        <div class="signi-companion-content">
+            <div class="signi-companion-header">
+                <span class="signi-companion-name"><i class="fas fa-sparkles"></i> Meet Signi — Your AI Companion</span>
+            </div>
+            <p class="signi-companion-text" style="font-size: 0.88rem;">
+                👋 <em>"Welcome to SignSpeak AI! Show me your hand signs and I'll recognize them, build your message, and speak it out loud for you!"</em>
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.45rem; align-items: center;">
+            <button class="btn btn-sm btn-gradient" onclick="window.signi.openFunMode()" title="✨ Play with Signi">
+                <i class="fas fa-gamepad"></i> Play
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="window.signi.openChat()" title="Chat with Signi">
+                <i class="fas fa-comment-dots"></i> Chat
+            </button>
+        </div>
+    </div>
+
+    <!-- Animated Interactive Flow Banner -->
+    <div class="hero-flow-banner">
+        <div class="flow-step-item">
+            <div class="flow-step-bubble" style="background: rgba(99, 102, 241, 0.1); color: var(--brand-indigo);">
+                <i class="fas fa-hand"></i>
+            </div>
+            <strong style="font-size: 1.05rem;">Hand Gesture</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Show to camera</span>
+        </div>
+
+        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="flow-step-item">
+            <div class="flow-step-bubble" style="background: rgba(6, 182, 212, 0.1); color: var(--brand-cyan);">
+                <i class="fas fa-microchip"></i>
+            </div>
+            <strong style="font-size: 1.05rem;">AI Vision</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Detects your sign</span>
+        </div>
+
+        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="flow-step-item">
+            <div class="flow-step-bubble" style="background: rgba(139, 92, 246, 0.1); color: var(--brand-purple);">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <strong style="font-size: 1.05rem;">Text Message</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Forms words</span>
+        </div>
+
+        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="flow-step-item">
+            <div class="flow-step-bubble" style="background: rgba(16, 185, 129, 0.1); color: var(--brand-emerald);">
+                <i class="fas fa-volume-high"></i>
+            </div>
+            <strong style="font-size: 1.05rem;">Natural Voice</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Speaks out loud</span>
+        </div>
+    </div>
+</section>
+
+<!-- How It Helps Section -->
+<section class="reveal-on-scroll" style="max-width: 1200px; margin: 0 auto 5rem; padding: 0 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">How SignSpeak Helps You</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Three simple steps to bridge every conversation</p>
+    </div>
+
+    <div class="stagger-items" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <!-- Card 1: Sign -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2.5rem 2rem; box-shadow: var(--shadow-md); transition: var(--transition-bounce);" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+            <div style="width: 58px; height: 58px; border-radius: 16px; background: rgba(99, 102, 241, 0.1); color: var(--brand-indigo); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-hand-peace"></i>
+            </div>
+            <h3 style="font-size: 1.45rem; margin-bottom: 0.75rem;">1. Sign</h3>
+            <p style="color: var(--text-sub); font-size: 0.95rem; line-height: 1.7;">
+                Hold your hand sign up to the webcam, or tap any letter on our visual alphabet board anytime your camera is unavailable.
+            </p>
+        </div>
+
+        <!-- Card 2: Text -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2.5rem 2rem; box-shadow: var(--shadow-md); transition: var(--transition-bounce);" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+            <div style="width: 58px; height: 58px; border-radius: 16px; background: rgba(236, 72, 153, 0.1); color: var(--brand-pink); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-spell-check"></i>
+            </div>
+            <h3 style="font-size: 1.45rem; margin-bottom: 0.75rem;">2. Text</h3>
+            <p style="color: var(--text-sub); font-size: 0.95rem; line-height: 1.7;">
+                The intelligent vision system detects your finger pose and instantly converts it into readable letters, words, and full sentences.
+            </p>
+        </div>
+
+        <!-- Card 3: Voice -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2.5rem 2rem; box-shadow: var(--shadow-md); transition: var(--transition-bounce);" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+            <div style="width: 58px; height: 58px; border-radius: 16px; background: rgba(16, 185, 129, 0.1); color: var(--brand-emerald); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-volume-high"></i>
+            </div>
+            <h3 style="font-size: 1.45rem; margin-bottom: 0.75rem;">3. Voice</h3>
+            <p style="color: var(--text-sub); font-size: 0.95rem; line-height: 1.7;">
+                With a single tap, the browser audibly speaks your message out loud using crystal-clear natural speech synthesis.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Choose Your Way Section -->
+<section class="reveal-on-scroll" style="max-width: 1200px; margin: 0 auto 5rem; padding: 0 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Choose Your Way To Communicate</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Flexible options for every environment</p>
+    </div>
+
+    <div class="stagger-items" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2rem;">
+        <!-- Option 1: Use Camera -->
+        <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.08) 100%), var(--bg-surface); border: 2px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-lg); padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);">
+            <div>
+                <div style="font-size: 2.6rem; color: var(--brand-indigo); margin-bottom: 1.25rem;">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h3 style="font-size: 1.75rem; margin-bottom: 0.75rem;">Use Camera</h3>
+                <p style="color: var(--text-sub); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+                    Show your hand signs directly to your webcam. The AI tracks your hand landmarks and automatically recognizes each sign as you spell.
+                </p>
+            </div>
+            <div>
+                <a href="/sign?mode=camera" class="btn btn-primary btn-lg" style="width: 100%;">
+                    <i class="fas fa-camera"></i> Start Camera Mode
+                </a>
+            </div>
+        </div>
+
+        <!-- Option 2: Choose Signs -->
+        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(6, 182, 212, 0.08) 100%), var(--bg-surface); border: 2px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-lg); padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);">
+            <div>
+                <div style="font-size: 2.6rem; color: var(--brand-emerald); margin-bottom: 1.25rem;">
+                    <i class="fas fa-hand-pointer"></i>
+                </div>
+                <h3 style="font-size: 1.75rem; margin-bottom: 0.75rem;">Choose Signs</h3>
+                <p style="color: var(--text-sub); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+                    Tap any sign from our clear visual alphabet cards. Perfect for noisy areas, dim lighting, or when your camera is offline.
+                </p>
+            </div>
+            <div>
+                <a href="/sign?mode=board" class="btn btn-voice btn-lg" style="width: 100%;">
+                    <i class="fas fa-table-cells"></i> Open Sign Board
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sign Alphabet Preview Section -->
+<section class="reveal-on-scroll" style="max-width: 1200px; margin: 0 auto 5rem; padding: 0 1.5rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 2rem; margin-bottom: 0.35rem;">Sign Alphabet Preview</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Clear anatomical ASL illustrations for every letter and common phrase</p>
+        </div>
+        <a href="/alphabet" class="btn btn-secondary">
+            <i class="fas fa-arrow-right"></i> View Full Alphabet (A-Z)
+        </a>
+    </div>
+
+    <!-- Preview Cards Grid (Populated dynamically from sign_data.js) -->
+    <div id="home-alphabet-preview" class="sign-grid">
+        <!-- Rendered via JavaScript -->
+    </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="reveal-on-scroll" style="max-width: 1000px; margin: 0 auto 6rem; padding: 0 1.5rem;">
+    <div style="background: var(--gradient-brand); border-radius: var(--radius-lg); padding: 4rem 2.5rem; text-align: center; color: #ffffff; box-shadow: var(--shadow-lg);">
+        <h2 style="font-size: 2.5rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">Ready to Communicate?</h2>
+        <p style="font-size: 1.15rem; max-width: 580px; margin: 0 auto 2.5rem; opacity: 0.95;">
+            Start turning your hand signs into spoken words in seconds. Free, easy to use, and completely private in your browser.
+        </p>
+        <a href="/sign" class="btn btn-lg" style="background: #ffffff; color: var(--brand-indigo); font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+            <i class="fas fa-comments"></i> Start Signing Now
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const previewContainer = document.getElementById('home-alphabet-preview');
+    if (previewContainer && typeof SIGN_DATABASE !== 'undefined') {
+        // Show first 8 letters + 2 common signs as a preview
+        const previewItems = SIGN_DATABASE.slice(0, 8);
+        previewContainer.innerHTML = previewItems.map(item => `
+            <div class="sign-card" onclick="window.location.href='/sign'">
+                <div class="sign-svg-wrapper">
+                    ${generateHandSignSvg(item.id)}
+                </div>
+                <div class="sign-letter-title">${item.label}</div>
+                <div class="sign-sub-meaning">${item.name}</div>
+                <button class="btn-add-sign"><i class="fas fa-plus"></i> Use Sign</button>
+            </div>
+        `).join('');
+    }
+});
+</script>
+{% endblock %}

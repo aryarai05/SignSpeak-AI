@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Alphabet & Visual Library — SignSpeak AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1320px; margin: 2rem auto 5rem; padding: 0 1.5rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <div class="hero-pill-badge">
+            <i class="fas fa-book-open"></i> Visual Sign Reference
+        </div>
+        <h1 style="font-size: 2.4rem; margin-bottom: 0.5rem;">
+            Explore the <span class="gradient-text">Sign Alphabet</span>
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 650px; margin: 0 auto;">
+            Learn how each hand sign is formed in American Sign Language. Tap any card to hear its pronunciation or use it in a message.
+        </p>
+    </div>
+
+    <!-- Signi Learning Guide Companion Banner -->
+    <div class="signi-companion-banner reveal-on-scroll" style="margin-bottom: 2rem;">
+        <div class="signi-avatar-box" data-size="52" data-state="helping" onclick="window.signi.openChat()" title="Tap to ask Signi"></div>
+        <div class="signi-companion-content">
+            <div class="signi-companion-header">
+                <span class="signi-companion-name"><i class="fas fa-lightbulb"></i> Signi's ASL Guide</span>
+                <span class="signi-status-pill">Learning Mode</span>
+            </div>
+            <p class="signi-companion-text">
+                Tap any letter to hear its pronunciation. You can also ask me <em>"Show me Thank You"</em> or <em>"Show me letter B"</em> in the chat and I'll demonstrate it!
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-sm btn-gradient" onclick="window.signi.openFunMode()" title="✨ Play with Signi">
+                <i class="fas fa-gamepad"></i> Play
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="window.signi.openChat()">
+                <i class="fas fa-hand-sparkles"></i> Ask Signi
+            </button>
+        </div>
+    </div>
+
+    <!-- Search & Filter Controls Card -->
+    <div class="reveal-on-scroll" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem;">
+        <!-- Search Input -->
+        <div style="position: relative; flex: 1; max-width: 360px;">
+            <i class="fas fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light);"></i>
+            <input type="text" id="alphabet-search-input" placeholder="Search letter or word (e.g. A, Hello)..." 
+                   style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border-radius: var(--radius-pill); border: 1px solid var(--border-subtle); background: var(--bg-main); font-size: 0.95rem; outline: none; transition: var(--transition);">
+        </div>
+
+        <!-- Category Filters -->
+        <div id="category-filter-chips" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-sm btn-primary" onclick="setAlphabetFilter('All', this)">All Signs</button>
+            <button class="btn btn-sm btn-secondary" onclick="setAlphabetFilter('Alphabet', this)">A-Z Alphabet</button>
+            <button class="btn btn-sm btn-secondary" onclick="setAlphabetFilter('Greetings', this)">Greetings</button>
+            <button class="btn btn-sm btn-secondary" onclick="setAlphabetFilter('Basic Communication', this)">Daily Signs</button>
+            <button class="btn btn-sm btn-secondary" onclick="setAlphabetFilter('Emergency', this)">Emergency</button>
+        </div>
+    </div>
+
+    <!-- Visual Sign Library Grid -->
+    <div id="alphabet-full-grid" class="sign-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem;">
+        <!-- Populated via JavaScript using sign_data.js -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentAlphabetFilter = 'All';
+
+function renderFullAlphabet(query = '', category = 'All') {
+    const grid = document.getElementById('alphabet-full-grid');
+    if (!grid || typeof SIGN_DATABASE === 'undefined') return;
+
+    let items = SIGN_DATABASE;
+
+    // Filter by Category
+    if (category !== 'All') {
+        items = items.filter(i => i.category === category);
+    }
+
+    // Filter by Search Query
+    if (query) {
+        const q = query.toLowerCase().trim();
+        items = items.filter(i => 
+            i.label.toLowerCase().includes(q) || 
+            i.name.toLowerCase().includes(q) || 
+            i.meaning.toLowerCase().includes(q)
+        );
+    }
+
+    if (items.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+                <i class="fas fa-circle-question" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No matching signs found</h3>
+                <p style="font-size: 0.9rem;">Try searching for another letter or word, or reset the filters.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = items.map(item => `
+        <div class="sign-card" style="padding: 1.75rem 1.25rem;">
+            <div class="sign-svg-wrapper" style="width: 105px; height: 105px; margin-bottom: 1rem;">
+                ${generateHandSignSvg(item.id)}
+            </div>
+            <div class="sign-letter-title" style="font-size: 1.75rem;">${item.label}</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--brand-indigo); margin-bottom: 0.35rem;">${item.name}</div>
+            <div class="sign-sub-meaning" style="font-size: 0.8rem; line-height: 1.4; margin-bottom: 1.25rem; min-height: 38px;">
+                ${item.meaning}
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                <button class="btn btn-sm btn-secondary" onclick="speakSignWord('${item.phrase}')" title="Hear Pronunciation">
+                    <i class="fas fa-volume-high"></i>
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="window.location.href='/sign'" title="Use this sign in workspace">
+                    <i class="fas fa-comments"></i> Use
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setAlphabetFilter(category, btn) {
+    currentAlphabetFilter = category;
+    const parent = document.getElementById('category-filter-chips');
+    if (parent) {
+        parent.querySelectorAll('button').forEach(b => b.className = 'btn btn-sm btn-secondary');
+        btn.className = 'btn btn-sm btn-primary';
+    }
+    const searchVal = document.getElementById('alphabet-search-input').value;
+    renderFullAlphabet(searchVal, currentAlphabetFilter);
+}
+
+function speakSignWord(word) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(word);
+        utter.rate = 0.95;
+        window.speechSynthesis.speak(utter);
+        showToast(`Speaking: "${word}"`, 'info', 1500);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderFullAlphabet();
+
+    const searchInput = document.getElementById('alphabet-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            renderFullAlphabet(e.target.value, currentAlphabetFilter);
+        });
+    }
+});
+</script>
+{% endblock %}

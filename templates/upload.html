@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Upload & Recognize — SignSpeak AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.5rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <h1 style="font-size: 2.35rem; margin-bottom: 0.5rem;">
+            Upload & <span class="gradient-text">Recognize Sign</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1rem; max-width: 600px; margin: 0 auto;">
+            Upload an image containing an American Sign Language hand gesture to inspect CNN predictions, confidence scores, and Grad-CAM attention heatmaps.
+        </p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="glass-card" style="padding: 2.5rem; margin-bottom: 2rem;">
+        <!-- Hidden File Input -->
+        <input type="file" id="image-file-input" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;">
+
+        <!-- Dropzone Area -->
+        <div id="upload-dropzone" class="dropzone-container">
+            <div class="dropzone-icon">
+                <i class="fas fa-cloud-arrow-up"></i>
+            </div>
+            <h3 style="font-size: 1.35rem; margin-bottom: 0.4rem;">Drag and drop hand gesture image</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.25rem;">
+                Supports JPG, JPEG, PNG, or WEBP (Max size 16MB)
+            </p>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image-file-input').click()">
+                <i class="fas fa-folder-open"></i> Browse Files
+            </button>
+        </div>
+
+        <!-- Image Preview & Configuration Controls -->
+        <div id="preview-section" style="display: none; margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 2rem;">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Preview Thumbnail -->
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
+                        Image Preview
+                    </span>
+                    <div style="width: 100%; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-card); background: #000; aspect-ratio: 1;">
+                        <img id="preview-image" src="" alt="Gesture Preview" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                </div>
+
+                <!-- Parameters -->
+                <div>
+                    <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">Inference Parameters</h3>
+
+                    <!-- Threshold Slider -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.35rem;">
+                            <span style="color: var(--text-secondary);">Confidence Acceptance Threshold</span>
+                            <strong id="upload-threshold-val" class="mono-text" style="color: var(--accent-cyan);">70%</strong>
+                        </div>
+                        <input type="range" id="upload-threshold-slider" min="50" max="95" value="70" step="1" 
+                               style="width: 100%; accent-color: var(--accent-indigo);">
+                        <small style="color: var(--text-muted); font-size: 0.775rem;">Predictions below this threshold will be flagged as Low Confidence.</small>
+                    </div>
+
+                    <!-- Options -->
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+                        <label style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem; cursor: pointer;">
+                            <input type="checkbox" id="use-hand-detector-check" checked style="accent-color: var(--accent-indigo); width: 16px; height: 16px;">
+                            <span>Enable MediaPipe Hand Landmark ROI Extraction</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem; cursor: pointer;">
+                            <input type="checkbox" id="use-gradcam-check" checked style="accent-color: var(--accent-indigo); width: 16px; height: 16px;">
+                            <span>Generate Explainable AI Heatmap (Grad-CAM)</span>
+                        </label>
+                    </div>
+
+                    <!-- Analyze CTA -->
+                    <button id="btn-analyze-image" class="btn btn-primary btn-lg" style="width: 100%;">
+                        <i class="fas fa-brain"></i> Run Deep Learning Inference
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Animation Overlay -->
+    <div id="analysis-loading-overlay" class="glass-card" style="display: none; padding: 3rem; text-align: center; margin-bottom: 2rem; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem;">
+        <div class="brand-icon-wrapper" style="width: 56px; height: 56px; font-size: 1.6rem; animation: pulseDot 1.4s infinite;">
+            <i class="fas fa-microchip"></i>
+        </div>
+        <div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.35rem;">Analyzing Hand Gesture...</h3>
+            <p style="color: var(--text-secondary); font-size: 0.88rem;">
+                Executing MediaPipe Hand ROI Crop → Resizing (224×224) → CNN Softmax Classification
+            </p>
+        </div>
+    </div>
+
+    <!-- Inference Results Section -->
+    <div id="results-section" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Output Summary -->
+            <div class="glass-card" style="padding: 2rem; text-align: center;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem;">
+                    Identified Hand Sign
+                </span>
+
+                <div id="upload-pred-letter" class="prediction-badge-hero" style="font-size: 5.5rem;">
+                    —
+                </div>
+
+                <div style="margin: 1.5rem 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.35rem;">
+                        <span style="color: var(--text-secondary);">Confidence Percentage</span>
+                        <strong id="upload-pred-conf" class="mono-text" style="color: var(--text-primary);">0.0%</strong>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="upload-conf-bar" class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; margin-top: 1rem;">
+                    <div id="upload-pred-status" class="badge-status">
+                        <span class="status-dot"></span> Status
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top-5 Probability Rankings -->
+            <div class="glass-card" style="padding: 2rem;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-bar" style="color: var(--accent-cyan);"></i> Top 5 Class Probabilities
+                </h3>
+                <div id="upload-topk-list">
+                    <!-- Populated via upload.js -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Grad-CAM Heatmap Visualization Section -->
+        <div id="gradcam-result-container" class="glass-card" style="margin-top: 2rem; padding: 2rem; display: none;">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+                <div class="brand-icon-wrapper" style="width: 32px; height: 32px; font-size: 0.9rem; background: var(--accent-indigo);">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3 style="font-size: 1.25rem;">Grad-CAM: Explainable AI Visualization</h3>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; max-width: 800px;">
+                Gradient-weighted Class Activation Mapping computes the gradient of the predicted class score relative to the feature activations of the final convolutional layer (<code class="mono-text">Conv2D</code>). Warm colors (red/yellow) indicate the key finger and palm regions that led to the prediction.
+            </p>
+
+            <div style="display: flex; justify-content: center;">
+                <div style="max-width: 380px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-card); box-shadow: var(--shadow-glass);">
+                    <img id="gradcam-preview-image" src="" alt="Grad-CAM Heatmap Overlay" style="width: 100%; display: block;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

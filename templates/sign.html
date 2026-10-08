@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Sign & Speak Workspace — SignSpeak AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1320px; margin: 1.5rem auto 4rem; padding: 0 1.5rem;">
+    <!-- Workspace Header -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 2.15rem; margin-bottom: 0.25rem;">
+                SignSpeak <span class="gradient-text">Workspace</span>
+            </h1>
+            <p style="color: var(--text-muted); font-size: 1rem;">
+                Show a hand sign to the camera, or choose a visual sign below to build words and speak.
+            </p>
+        </div>
+
+        <!-- Mode Segmented Switch -->
+        <div class="segmented-tabs">
+            <button id="tab-mode-camera" class="tab-btn active" onclick="switchWorkspaceMode('camera')">
+                <i class="fas fa-video"></i> Camera Mode
+            </button>
+            <button id="tab-mode-split" class="tab-btn" onclick="switchWorkspaceMode('split')">
+                <i class="fas fa-columns"></i> Split View
+            </button>
+            <button id="tab-mode-board" class="tab-btn" onclick="switchWorkspaceMode('board')">
+                <i class="fas fa-table-cells"></i> Sign Board
+            </button>
+        </div>
+    </div>
+
+    <!-- Signi Live AI Companion Bar -->
+    <div class="signi-companion-banner">
+        <div class="signi-avatar-box" data-size="52" data-state="idle" onclick="window.signi.openChat()" title="Tap to talk to Signi"></div>
+        <div class="signi-companion-content">
+            <div class="signi-companion-header">
+                <span class="signi-companion-name"><i class="fas fa-sparkles"></i> Signi AI Companion</span>
+                <span class="signi-status-pill">Active Buddy</span>
+            </div>
+            <p id="signi-cam-feedback-text" class="signi-companion-text">
+                Show a sign to the camera, or choose a visual sign below to build words and speak!
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-sm btn-gradient" onclick="window.signi.openFunMode()" title="✨ Play with Signi">
+                <i class="fas fa-gamepad"></i> ✨ Play
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="window.signi.openChat()" title="Chat with Signi">
+                <i class="fas fa-comment-dots"></i> Ask Signi
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= PERSISTENT MESSAGE HUB PANEL ================= -->
+    <section class="message-hub-panel">
+        <div class="message-box-header">
+            <div class="message-label">
+                <i class="fas fa-comment-dots"></i> Your Message
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span id="char-count-badge" class="mono-text" style="font-size: 0.8rem; color: var(--text-light); background: rgba(0,0,0,0.04); padding: 0.2rem 0.6rem; border-radius: var(--radius-pill);">0 characters</span>
+            </div>
+        </div>
+
+        <!-- Message Accumulation Display -->
+        <div id="workspace-message-box" class="message-content-box">
+            <span id="message-empty-placeholder" style="color: var(--text-light); font-size: 1.15rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.6rem;">
+                <span style="font-size: 1.35rem;">✨</span> Nothing here yet. Show a sign to the camera or tap cards below to create your message!
+            </span>
+        </div>
+
+        <!-- Message Controls Bar -->
+        <div class="message-controls-bar">
+            <!-- Left Controls: Editing Tools -->
+            <div class="message-actions-left">
+                <button id="btn-space" class="btn btn-secondary btn-sm" title="Add Space">
+                    <i class="fas fa-arrows-left-right"></i> Space
+                </button>
+                <button id="btn-delete" class="btn btn-secondary btn-sm" title="Delete Last Character">
+                    <i class="fas fa-delete-left"></i> Delete
+                </button>
+                <button id="btn-clear" class="btn btn-ghost btn-sm" title="Clear Message">
+                    <i class="fas fa-trash-can"></i> Clear All
+                </button>
+                <button id="btn-copy" class="btn btn-ghost btn-sm" title="Copy to Clipboard">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+
+            <!-- Right Controls: Big Vocalization Action & Voice Settings -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <!-- Voice Speed Selector -->
+                <select id="voice-speed-select" style="padding: 0.55rem 0.85rem; border-radius: var(--radius-pill); border: 1px solid var(--border-subtle); background: var(--bg-surface); color: var(--text-sub); font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                    <option value="0.8">0.8x Slow</option>
+                    <option value="1.0" selected>1.0x Normal</option>
+                    <option value="1.2">1.2x Fast</option>
+                </select>
+
+                <!-- Primary Speak Button -->
+                <button id="btn-speak-main" class="btn btn-voice" title="Speak Your Message Aloud">
+                    <i class="fas fa-volume-high"></i> Speak Message
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Phrases & Emergency Bar -->
+    <div style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+            <span style="font-size: 0.825rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                Quick Phrases (Tap to Add & Speak)
+            </span>
+            <!-- Emergency Direct Button -->
+            <button class="btn btn-emergency btn-sm" onclick="handleEmergencyHelp()">
+                <i class="fas fa-circle-exclamation"></i> I Need Help
+            </button>
+        </div>
+
+        <div id="quick-phrases-container" class="phrases-strip">
+            <!-- Populated via JS -->
+        </div>
+    </div>
+
+    <!-- ================= MAIN WORKSPACE BODY ================= -->
+    <div id="workspace-grid" style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 2rem; align-items: start;">
+        
+        <!-- ================= COLUMN 1: CAMERA MODE ================= -->
+        <div id="camera-section" class="camera-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <div class="brand-badge-icon" style="width: 36px; height: 36px; font-size: 1rem;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h2 style="font-size: 1.3rem;">Live Camera Recognition</h2>
+                </div>
+
+                <!-- Friendly Camera Status -->
+                <div id="camera-status-pill" style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.825rem; font-weight: 700; color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 0.35rem 0.85rem; border-radius: var(--radius-pill);">
+                    <span id="cam-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--text-light);"></span>
+                    <span id="cam-status-label">Camera Offline</span>
+                </div>
+            </div>
+
+            <!-- Video Frame Container -->
+            <div class="camera-feed-box">
+                <video id="webcam-video" autoplay playsinline muted></video>
+                <canvas id="webcam-canvas"></canvas>
+
+                <!-- Subtle Laser Scan Line -->
+                <div id="camera-scan-line" class="camera-scan-line"></div>
+
+                <!-- Helpful Guide Pill over camera -->
+                <div id="camera-guide-badge" class="camera-guide-pill">
+                    <i id="guide-icon" class="fas fa-hand"></i>
+                    <span id="guide-text">Click 'Start Camera' below</span>
+                </div>
+
+                <!-- Target Box Frame -->
+                <div id="hand-target-box" class="hand-target-frame"></div>
+
+                <!-- Placeholder when camera is off -->
+                <div id="camera-offline-placeholder" style="position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; color: #94a3b8; text-align: center; padding: 2rem;">
+                    <i class="fas fa-video-slash" style="font-size: 3.5rem; opacity: 0.6;"></i>
+                    <strong style="font-size: 1.15rem; color: #ffffff;">Camera is Currently Paused</strong>
+                    <p style="font-size: 0.88rem; max-width: 300px; color: #cbd5e1;">
+                        Click <strong>Start Camera</strong> to let SignSpeak recognize your hand gestures automatically.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Camera Controls Bar -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button id="btn-start-camera" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Camera
+                    </button>
+                    <button id="btn-stop-camera" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+
+                <!-- Stability Indicator -->
+                <div id="stability-meter-box" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.825rem; color: var(--text-muted);">
+                    <span>Hold Steady:</span>
+                    <div style="width: 80px; height: 8px; background: rgba(0,0,0,0.08); border-radius: var(--radius-pill); overflow: hidden;">
+                        <div id="stability-progress-bar" style="width: 0%; height: 100%; background: var(--brand-indigo); transition: width 0.15s ease-out;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Recognized Sign HUD Banner -->
+            <div class="current-sign-hero">
+                <div>
+                    <span style="font-size: 0.785rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block;">
+                        Recognized Sign
+                    </span>
+                    <strong id="recognized-sign-letter" class="sign-large-letter">—</strong>
+                </div>
+
+                <div style="text-align: right;">
+                    <span style="font-size: 0.785rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block;">
+                        Confidence
+                    </span>
+                    <div id="recognized-sign-confidence" class="mono-text" style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">
+                        0%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= COLUMN 2: SIGN BOARD MODE ================= -->
+        <div id="signboard-section" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-md);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <div class="brand-badge-icon" style="width: 36px; height: 36px; font-size: 1rem; background: var(--gradient-emerald);">
+                        <i class="fas fa-hand-pointer"></i>
+                    </div>
+                    <h2 style="font-size: 1.3rem;">Visual Sign Board</h2>
+                </div>
+
+                <!-- Sign Filter Pills -->
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <button class="btn btn-sm btn-primary" onclick="filterBoardCategory('Alphabet', this)">A-Z</button>
+                    <button class="btn btn-sm btn-secondary" onclick="filterBoardCategory('Greetings', this)">Greetings</button>
+                    <button class="btn btn-sm btn-secondary" onclick="filterBoardCategory('Basic Communication', this)">Daily</button>
+                </div>
+            </div>
+
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+                Tap any sign card below to immediately add the letter or word to your message above.
+            </p>
+
+            <!-- Sign Cards Grid -->
+            <div id="signboard-grid" class="sign-grid" style="max-height: 520px; overflow-y: auto; padding-right: 0.25rem;">
+                <!-- Populated via sign_data.js -->
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/workspace.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SignSpeak AI — Turn Sign Language Into Voice{% endblock %}</title>
+    
+    <meta name="description" content="SignSpeak AI: Turn sign language into readable text and natural speech in real-time. Accessible, friendly communication with camera gesture recognition and visual sign board.">
+    <meta name="theme-color" content="#6366f1">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signi.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Friendly Modern Header -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <div class="brand-badge-icon">
+                    <i class="fas fa-hand-sparkles"></i>
+                </div>
+                <span>SignSpeak <span class="gradient-text">AI</span></span>
+            </a>
+
+            <!-- Navigation Links -->
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="/sign" class="nav-link {% if request.path in ['/sign', '/live'] %}active{% endif %}">
+                        <i class="fas fa-comments"></i> Sign & Speak
+                    </a>
+                </li>
+                <li>
+                    <a href="/alphabet" class="nav-link {% if request.path == '/alphabet' %}active{% endif %}">
+                        <i class="fas fa-book-open"></i> Sign Alphabet
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-simple"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}">
+                        <i class="fas fa-heart"></i> About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <a href="/sign" class="btn btn-primary btn-sm">
+                    <i class="fas fa-hand-wave"></i> Start Signing
+                </a>
+
+                <button id="theme-toggle-btn" class="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </button>
+
+                <button id="mobile-menu-btn" class="mobile-toggle" aria-label="Open Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main style="flex: 1; position: relative; z-index: 1;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Toast Container -->
+    <div id="toast-container" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none;"></div>
+
+    <!-- Friendly Accessibility Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <div class="brand-badge-icon" style="width: 34px; height: 34px; font-size: 1rem;">
+                        <i class="fas fa-hand-sparkles"></i>
+                    </div>
+                    <strong style="font-size: 1.2rem;">SignSpeak AI</strong>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 480px; margin-bottom: 0.5rem;">
+                    Breaking communication barriers with AI. Turn American Sign Language gestures into readable text and audible voice in real time.
+                </p>
+                <p style="color: var(--text-light); font-size: 0.8rem;">
+                    Designed for accessibility, communication, and human connection.
+                </p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="/sign" class="btn btn-secondary btn-sm"><i class="fas fa-comments"></i> Open Workspace</a>
+                <a href="/alphabet" class="btn btn-secondary btn-sm"><i class="fas fa-book"></i> Sign Library</a>
+                <a href="/dashboard" class="btn btn-secondary btn-sm"><i class="fas fa-clock-rotate-left"></i> My Messages</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core Scripts -->
+    <script src="{{ url_for('static', filename='js/sign_data.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/signi.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

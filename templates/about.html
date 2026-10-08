@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}About — SignSpeak AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 3rem auto 6rem; padding: 0 1.5rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+        <div class="hero-pill-badge">
+            <i class="fas fa-heart"></i> Our Mission
+        </div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.75rem;">
+            About <span class="gradient-text">SignSpeak AI</span>
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">
+            Breaking communication barriers by turning sign language gestures into readable text and natural voice.
+        </p>
+    </div>
+
+    <!-- Friendly About Card -->
+    <div class="reveal-on-scroll" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 3rem 2.5rem; box-shadow: var(--shadow-md); margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.6rem; margin-bottom: 1rem;">Turn Sign Language Into Voice</h2>
+        <p style="color: var(--text-sub); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            SignSpeak AI is an assistive communication application designed to make everyday conversations seamless between individuals who use sign language and those who do not.
+        </p>
+        <p style="color: var(--text-sub); font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem;">
+            Using real-time computer vision and deep learning, the app identifies American Sign Language (ASL) gestures from your webcam, assembles them into words, and speaks them out loud. For moments when camera access isn't available, our interactive Sign Board provides visual cards to tap and speak effortlessly.
+        </p>
+
+        <!-- 3 Simple Pillars -->
+        <div class="stagger-items" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 2rem;">
+            <div>
+                <strong style="color: var(--brand-indigo); font-size: 1.1rem; display: block; margin-bottom: 0.35rem;">
+                    <i class="fas fa-lock"></i> 100% Private
+                </strong>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Video feeds are processed in real-time in your browser session. Your video is never recorded or stored.</p>
+            </div>
+            <div>
+                <strong style="color: var(--brand-emerald); font-size: 1.1rem; display: block; margin-bottom: 0.35rem;">
+                    <i class="fas fa-universal-access"></i> Highly Accessible
+                </strong>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Built with high contrast, large buttons, clean vector sign cards, and smooth screen-reader support.</p>
+            </div>
+            <div>
+                <strong style="color: var(--brand-pink); font-size: 1.1rem; display: block; margin-bottom: 0.35rem;">
+                    <i class="fas fa-bolt"></i> Fast & Instant
+                </strong>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Instant speech synthesis and low-latency gesture detection designed for practical conversation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notice Card -->
+    <div class="reveal-on-scroll" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: var(--radius-md); padding: 1.75rem; text-align: center;">
+        <h4 style="font-size: 1rem; color: var(--brand-indigo); margin-bottom: 0.4rem;">
+            <i class="fas fa-circle-info"></i> Language Scope Notice
+        </h4>
+        <p style="color: var(--text-sub); font-size: 0.88rem; line-height: 1.6; max-width: 650px; margin: 0 auto;">
+            SignSpeak AI focuses on American Sign Language (ASL) alphabet finger-spelling and essential everyday communication signs. It does not replace full natural sentence sign language, but provides an accessible bridge for everyday words.
+        </p>
+    </div>
+</div>
+{% endblock %}
