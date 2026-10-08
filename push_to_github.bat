@@ -3,6 +3,7 @@ title Push SignSpeak AI to GitHub
 echo ========================================================
 echo   Pushing SignSpeak AI to GitHub
 echo ========================================================
+set "GIT_ASKPASS="
 echo.
 echo Checking git status and branch...
 git branch -M main
